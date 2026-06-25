@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
+import { requireRole } from "@/lib/auth";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 
-export function AdminLayout({ children }: { children: ReactNode }) {
+export async function AdminLayout({ children }: { children: ReactNode }) {
+  await requireRole(["ADMIN"]);
+
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950 lg:flex">
       <AdminSidebar />

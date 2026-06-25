@@ -5,6 +5,8 @@ const navItems = [
   { href: "/clients", label: "Clients", marker: "C" },
   { href: "/equipment", label: "Equipment", marker: "E" },
   { href: "/work-orders", label: "Work Orders", marker: "W" },
+  { href: "/service-requests", label: "Requests", marker: "R" },
+  { href: "/team", label: "Team", marker: "T" },
   { href: "/client-portal", label: "Client Portal", marker: "P" },
 ];
 

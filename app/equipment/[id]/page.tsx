@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 import { prisma } from "@/lib/prisma";
 import { deleteEquipment, updateEquipment } from "../actions";
 
@@ -12,6 +14,8 @@ type EquipmentDetailPageProps = {
 export default async function EquipmentDetailPage({
   params,
 }: EquipmentDetailPageProps) {
+  await connection();
+
   const { id } = await params;
 
   const equipment = await prisma.equipment.findUnique({
@@ -38,49 +42,35 @@ export default async function EquipmentDetailPage({
   const deleteEquipmentWithId = deleteEquipment.bind(null, equipment.id);
 
   return (
-    <main className="min-h-screen bg-slate-950 p-8 text-white">
-      <div className="mx-auto max-w-4xl">
-        <Link href="/equipment" className="text-sm text-cyan-400">
-          ← Back to Equipment
+    <AdminLayout>
+      <div className="max-w-4xl">
+        <Link href="/equipment" className="text-sm font-medium text-zinc-500">
+          Back to equipment
         </Link>
 
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-            <p className="text-sm text-slate-400">Client</p>
-            <p className="mt-2 text-xl font-bold">{equipment.client.name}</p>
-          </div>
+        <section className="mt-5 grid gap-4 md:grid-cols-3">
+          <InfoCard label="Client" value={equipment.client.name} />
+          <InfoCard
+            label="Work Orders"
+            value={String(equipment.workOrders.length)}
+          />
+          <InfoCard label="Status" value={equipment.status} />
+        </section>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-            <p className="text-sm text-slate-400">Work Orders</p>
-            <p className="mt-2 text-3xl font-bold">
-              {equipment.workOrders.length}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-            <p className="text-sm text-slate-400">Status</p>
-            <p className="mt-2 text-xl font-bold text-cyan-400">
-              {equipment.status}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h1 className="text-2xl font-bold">Edit Equipment</h1>
-          <p className="mt-2 text-slate-400">
+        <div className="mt-6 rounded-lg border border-zinc-200 bg-white p-6">
+          <h1 className="text-2xl font-semibold">Edit Equipment</h1>
+          <p className="mt-2 text-sm text-zinc-600">
             Perbarui data equipment dan status maintenance.
           </p>
 
-          <form action={updateEquipmentWithId} className="mt-6 space-y-5">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Client
-              </label>
+          <form action={updateEquipmentWithId} className="mt-6 grid gap-5">
+            <label className="grid gap-2 text-sm font-medium">
+              Client
               <select
                 name="clientId"
                 required
                 defaultValue={equipment.clientId}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
+                className="rounded-md border border-zinc-300 px-3 py-2 font-normal"
               >
                 {clients.map((client) => (
                   <option key={client.id} value={client.id}>
@@ -88,110 +78,77 @@ export default async function EquipmentDetailPage({
                   </option>
                 ))}
               </select>
+            </label>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              <TextField
+                name="name"
+                label="Equipment Name"
+                defaultValue={equipment.name}
+                required
+              />
+              <TextField
+                name="code"
+                label="Equipment Code"
+                defaultValue={equipment.code}
+                required
+              />
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Equipment Name
-                </label>
-                <input
-                  name="name"
-                  required
-                  defaultValue={equipment.name}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Equipment Code
-                </label>
-                <input
-                  name="code"
-                  required
-                  defaultValue={equipment.code}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-                />
-              </div>
+              <TextField
+                name="category"
+                label="Category"
+                defaultValue={equipment.category ?? ""}
+              />
+              <TextField
+                name="brand"
+                label="Brand"
+                defaultValue={equipment.brand ?? ""}
+              />
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Category
-                </label>
-                <input
-                  name="category"
-                  defaultValue={equipment.category ?? ""}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Brand
-                </label>
-                <input
-                  name="brand"
-                  defaultValue={equipment.brand ?? ""}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Location
-                </label>
-                <input
-                  name="location"
-                  defaultValue={equipment.location ?? ""}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
-                  Status
-                </label>
+              <TextField
+                name="location"
+                label="Location"
+                defaultValue={equipment.location ?? ""}
+              />
+              <label className="grid gap-2 text-sm font-medium">
+                Status
                 <select
                   name="status"
                   defaultValue={equipment.status}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
+                  className="rounded-md border border-zinc-300 px-3 py-2 font-normal"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="NEED_MAINTENANCE">NEED_MAINTENANCE</option>
                   <option value="BROKEN">BROKEN</option>
                   <option value="INACTIVE">INACTIVE</option>
                 </select>
-              </div>
+              </label>
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Description
-              </label>
+            <label className="grid gap-2 text-sm font-medium">
+              Description
               <textarea
                 name="description"
                 rows={3}
                 defaultValue={equipment.description ?? ""}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
+                className="rounded-md border border-zinc-300 px-3 py-2 font-normal"
               />
-            </div>
+            </label>
 
             <div className="flex justify-end gap-3">
               <Link
                 href="/equipment"
-                className="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-300 transition hover:border-slate-500"
+                className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700"
               >
                 Cancel
               </Link>
-
               <button
                 type="submit"
-                className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400"
+                className="rounded-md bg-zinc-950 px-4 py-2 text-sm font-medium text-white"
               >
                 Update Equipment
               </button>
@@ -199,22 +156,54 @@ export default async function EquipmentDetailPage({
           </form>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-red-900/50 bg-red-950/20 p-6">
-          <h2 className="text-xl font-bold text-red-400">Danger Zone</h2>
-          <p className="mt-2 text-sm text-slate-400">
+        <section className="mt-6 rounded-lg border border-red-200 bg-red-50 p-6">
+          <h2 className="text-lg font-semibold text-red-700">Danger Zone</h2>
+          <p className="mt-2 text-sm text-red-700">
             Hapus equipment hanya jika belum memiliki work order.
           </p>
-
           <form action={deleteEquipmentWithId} className="mt-4">
             <button
               type="submit"
-              className="rounded-xl bg-red-500 px-5 py-3 font-semibold text-white transition hover:bg-red-400"
+              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white"
             >
               Delete Equipment
             </button>
           </form>
-        </div>
+        </section>
       </div>
-    </main>
+    </AdminLayout>
+  );
+}
+
+function InfoCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <p className="text-sm text-zinc-500">{label}</p>
+      <p className="mt-2 font-semibold">{value}</p>
+    </div>
+  );
+}
+
+function TextField({
+  name,
+  label,
+  defaultValue,
+  required = false,
+}: {
+  name: string;
+  label: string;
+  defaultValue: string;
+  required?: boolean;
+}) {
+  return (
+    <label className="grid gap-2 text-sm font-medium">
+      {label}
+      <input
+        name={name}
+        required={required}
+        defaultValue={defaultValue}
+        className="rounded-md border border-zinc-300 px-3 py-2 font-normal"
+      />
+    </label>
   );
 }

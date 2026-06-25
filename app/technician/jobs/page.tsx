@@ -1,0 +1,160 @@
+import Link from "next/link";
+import { connection } from "next/server";
+import { WorkOrderStatus } from "@prisma/client";
+import { PortalLayout } from "@/components/layout/PortalLayout";
+import { requireRole } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
+const statusLabels: Record<WorkOrderStatus, string> = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+const statusStyles: Record<WorkOrderStatus, string> = {
+  PENDING: "bg-amber-50 text-amber-700 ring-amber-200",
+  IN_PROGRESS: "bg-blue-50 text-blue-700 ring-blue-200",
+  COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  CANCELLED: "bg-zinc-100 text-zinc-600 ring-zinc-200",
+};
+
+function formatDate(date: Date | null) {
+  if (!date) {
+    return "-";
+  }
+
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+export default async function TechnicianJobsPage() {
+  await connection();
+  const user = await requireRole(["ADMIN", "TECHNICIAN"]);
+
+  const workOrders = await prisma.workOrder.findMany({
+    where:
+      user.role === "TECHNICIAN"
+        ? {
+            OR: [{ technicianId: user.id }, { technicianId: null }],
+          }
+        : undefined,
+    include: {
+      client: true,
+      equipment: true,
+      technician: true,
+      report: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const openJobs = workOrders.filter((job) => job.status !== "COMPLETED");
+  const completedJobs = workOrders.filter((job) => job.status === "COMPLETED");
+
+  return (
+    <PortalLayout
+      role="TECHNICIAN"
+      title="Technician Jobs"
+      subtitle="Field Service"
+    >
+      <div className="flex flex-col gap-8">
+        <div>
+          <p className="text-sm font-medium text-zinc-500">My Assignment</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+            Daftar Pekerjaan Teknisi
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-zinc-600">
+            Lihat pekerjaan maintenance, mulai pekerjaan, dan lanjutkan ke
+            pengisian report.
+          </p>
+        </div>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          <Metric label="Open Jobs" value={String(openJobs.length)} />
+          <Metric label="Completed" value={String(completedJobs.length)} />
+          <Metric label="Total Visible" value={String(workOrders.length)} />
+        </section>
+
+        <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[880px] text-left text-sm">
+              <thead className="border-b border-zinc-200 bg-zinc-100 text-xs uppercase text-zinc-500">
+                <tr>
+                  <th className="px-5 py-3 font-semibold">Work Order</th>
+                  <th className="px-5 py-3 font-semibold">Client</th>
+                  <th className="px-5 py-3 font-semibold">Equipment</th>
+                  <th className="px-5 py-3 font-semibold">Schedule</th>
+                  <th className="px-5 py-3 font-semibold">Status</th>
+                  <th className="px-5 py-3 font-semibold">Assignment</th>
+                  <th className="px-5 py-3 font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {workOrders.map((workOrder) => (
+                  <tr key={workOrder.id}>
+                    <td className="px-5 py-4">
+                      <p className="font-semibold text-zinc-950">
+                        {workOrder.workOrderNo}
+                      </p>
+                      <p className="mt-1 text-zinc-500">{workOrder.title}</p>
+                    </td>
+                    <td className="px-5 py-4 text-zinc-600">
+                      {workOrder.client.name}
+                    </td>
+                    <td className="px-5 py-4 text-zinc-600">
+                      <p>{workOrder.equipment.name}</p>
+                      <p className="text-xs text-zinc-400">
+                        {workOrder.equipment.code}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 text-zinc-600">
+                      {formatDate(workOrder.scheduledDate)}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${statusStyles[workOrder.status]}`}
+                      >
+                        {statusLabels[workOrder.status]}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-zinc-600">
+                      {workOrder.technician?.name ?? "Available"}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Link
+                        href={`/technician/jobs/${workOrder.id}`}
+                        className="font-medium text-zinc-950 hover:underline"
+                      >
+                        Open
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {workOrders.length === 0 ? (
+            <div className="px-5 py-12 text-center text-sm text-zinc-500">
+              Belum ada pekerjaan untuk teknisi.
+            </div>
+          ) : null}
+        </section>
+      </div>
+    </PortalLayout>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <p className="text-sm font-medium text-zinc-500">{label}</p>
+      <p className="mt-3 text-3xl font-semibold">{value}</p>
+    </div>
+  );
+}

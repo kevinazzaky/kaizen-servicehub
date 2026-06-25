@@ -1,69 +1,28 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/auth";
+import { getString } from "@/lib/form-data";
+import { saveMaintenanceReportRecord } from "@/modules/reports/service";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-function getString(formData: FormData, key: string): string | null {
-  const value = formData.get(key);
-
-  if (typeof value !== "string") {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
 
 export async function saveMaintenanceReport(
   workOrderId: string,
   formData: FormData,
 ) {
-  const conditionBefore = getString(formData, "conditionBefore");
-  const actionTaken = getString(formData, "actionTaken");
-  const conditionAfter = getString(formData, "conditionAfter");
-  const recommendation = getString(formData, "recommendation");
-  const technicianNote = getString(formData, "technicianNote");
+  const user = await requireRole(["ADMIN", "TECHNICIAN"]);
 
-  const workOrder = await prisma.workOrder.findUnique({
-    where: {
-      id: workOrderId,
+  await saveMaintenanceReportRecord(
+    workOrderId,
+    {
+      conditionBefore: getString(formData, "conditionBefore"),
+      actionTaken: getString(formData, "actionTaken"),
+      conditionAfter: getString(formData, "conditionAfter"),
+      recommendation: getString(formData, "recommendation"),
+      technicianNote: getString(formData, "technicianNote"),
     },
-  });
-
-  if (!workOrder) {
-    throw new Error("Work order tidak ditemukan.");
-  }
-
-  await prisma.maintenanceReport.upsert({
-    where: {
-      workOrderId,
-    },
-    update: {
-      conditionBefore,
-      actionTaken,
-      conditionAfter,
-      recommendation,
-      technicianNote,
-    },
-    create: {
-      workOrderId,
-      conditionBefore,
-      actionTaken,
-      conditionAfter,
-      recommendation,
-      technicianNote,
-    },
-  });
-
-  await prisma.workOrder.update({
-    where: {
-      id: workOrderId,
-    },
-    data: {
-      status: "COMPLETED",
-    },
-  });
+    user,
+  );
 
   revalidatePath("/work-orders");
   revalidatePath(`/work-orders/${workOrderId}`);

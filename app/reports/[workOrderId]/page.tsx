@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { AdminLayout } from "@/components/layout/AdminLayout";
+import { requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveMaintenanceReport } from "../actions";
 
@@ -10,6 +13,9 @@ type ReportPageProps = {
 };
 
 export default async function ReportPage({ params }: ReportPageProps) {
+  await connection();
+
+  const user = await requireRole(["ADMIN", "TECHNICIAN"]);
   const { workOrderId } = await params;
 
   const workOrder = await prisma.workOrder.findUnique({
@@ -27,118 +33,66 @@ export default async function ReportPage({ params }: ReportPageProps) {
     notFound();
   }
 
+  if (
+    user.role === "TECHNICIAN" &&
+    workOrder.technicianId &&
+    workOrder.technicianId !== user.id
+  ) {
+    notFound();
+  }
+
   const saveReportWithId = saveMaintenanceReport.bind(null, workOrder.id);
 
   return (
-    <main className="min-h-screen bg-slate-950 p-8 text-white">
-      <div className="mx-auto max-w-4xl">
+    <AdminLayout>
+      <div className="max-w-4xl">
         <Link
           href={`/work-orders/${workOrder.id}`}
-          className="text-sm text-cyan-400"
+          className="text-sm font-medium text-zinc-500"
         >
-          ← Back to Work Order
+          Back to work order
         </Link>
 
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-400">
-            Maintenance Report
-          </p>
+        <section className="mt-5 grid gap-4 md:grid-cols-3">
+          <InfoCard label="Work Order" value={workOrder.workOrderNo} />
+          <InfoCard label="Client" value={workOrder.client.name} />
+          <InfoCard label="Equipment" value={workOrder.equipment.name} />
+        </section>
 
-          <h1 className="mt-2 text-2xl font-bold">{workOrder.workOrderNo}</h1>
-
-          <p className="mt-2 text-slate-400">
+        <div className="mt-6 rounded-lg border border-zinc-200 bg-white p-6">
+          <h1 className="text-2xl font-semibold">Maintenance Report</h1>
+          <p className="mt-2 text-sm text-zinc-600">
             Isi laporan hasil pekerjaan maintenance untuk equipment berikut.
           </p>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-              <p className="text-sm text-slate-400">Client</p>
-              <p className="mt-1 font-semibold">{workOrder.client.name}</p>
-            </div>
+          <form action={saveReportWithId} className="mt-6 grid gap-5">
+            <ReportTextarea
+              name="conditionBefore"
+              label="Kondisi Sebelum Maintenance"
+              defaultValue={workOrder.report?.conditionBefore ?? ""}
+            />
+            <ReportTextarea
+              name="actionTaken"
+              label="Tindakan yang Dilakukan"
+              defaultValue={workOrder.report?.actionTaken ?? ""}
+            />
+            <ReportTextarea
+              name="conditionAfter"
+              label="Kondisi Setelah Maintenance"
+              defaultValue={workOrder.report?.conditionAfter ?? ""}
+            />
+            <ReportTextarea
+              name="recommendation"
+              label="Rekomendasi"
+              defaultValue={workOrder.report?.recommendation ?? ""}
+            />
+            <ReportTextarea
+              name="technicianNote"
+              label="Catatan Teknisi"
+              defaultValue={workOrder.report?.technicianNote ?? ""}
+            />
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-              <p className="text-sm text-slate-400">Equipment</p>
-              <p className="mt-1 font-semibold">{workOrder.equipment.name}</p>
-              <p className="text-xs text-slate-500">
-                {workOrder.equipment.code}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-              <p className="text-sm text-slate-400">Status</p>
-              <p className="mt-1 font-semibold text-cyan-400">
-                {workOrder.status}
-              </p>
-            </div>
-          </div>
-
-          <form action={saveReportWithId} className="mt-8 space-y-5">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Kondisi Sebelum Maintenance
-              </label>
-              <textarea
-                name="conditionBefore"
-                rows={4}
-                defaultValue={workOrder.report?.conditionBefore ?? ""}
-                placeholder="Contoh: Freezer mengalami penumpukan bunga es dan suhu kurang stabil."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Tindakan yang Dilakukan
-              </label>
-              <textarea
-                name="actionTaken"
-                rows={4}
-                defaultValue={workOrder.report?.actionTaken ?? ""}
-                placeholder="Contoh: Membersihkan evaporator, pengecekan thermostat, dan pengecekan seal pintu."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Kondisi Setelah Maintenance
-              </label>
-              <textarea
-                name="conditionAfter"
-                rows={4}
-                defaultValue={workOrder.report?.conditionAfter ?? ""}
-                placeholder="Contoh: Freezer kembali berfungsi normal dengan suhu stabil."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Rekomendasi
-              </label>
-              <textarea
-                name="recommendation"
-                rows={3}
-                defaultValue={workOrder.report?.recommendation ?? ""}
-                placeholder="Contoh: Perlu pengecekan ulang dalam 1 bulan."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Catatan Teknisi
-              </label>
-              <textarea
-                name="technicianNote"
-                rows={3}
-                defaultValue={workOrder.report?.technicianNote ?? ""}
-                placeholder="Catatan tambahan dari teknisi."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-300">
+            <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
               Setelah report disimpan, status work order otomatis berubah
               menjadi COMPLETED.
             </div>
@@ -146,14 +100,13 @@ export default async function ReportPage({ params }: ReportPageProps) {
             <div className="flex justify-end gap-3">
               <Link
                 href={`/work-orders/${workOrder.id}`}
-                className="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-300 transition hover:border-slate-500"
+                className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700"
               >
                 Cancel
               </Link>
-
               <button
                 type="submit"
-                className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400"
+                className="rounded-md bg-zinc-950 px-4 py-2 text-sm font-medium text-white"
               >
                 Save Report
               </button>
@@ -161,6 +114,37 @@ export default async function ReportPage({ params }: ReportPageProps) {
           </form>
         </div>
       </div>
-    </main>
+    </AdminLayout>
+  );
+}
+
+function InfoCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-zinc-200 bg-white p-5">
+      <p className="text-sm text-zinc-500">{label}</p>
+      <p className="mt-2 font-semibold">{value}</p>
+    </div>
+  );
+}
+
+function ReportTextarea({
+  name,
+  label,
+  defaultValue,
+}: {
+  name: string;
+  label: string;
+  defaultValue: string;
+}) {
+  return (
+    <label className="grid gap-2 text-sm font-medium">
+      {label}
+      <textarea
+        name={name}
+        rows={4}
+        defaultValue={defaultValue}
+        className="rounded-md border border-zinc-300 px-3 py-2 font-normal"
+      />
+    </label>
   );
 }

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { WorkOrderStatus } from "@prisma/client";
+import { requireUser } from "@/lib/auth";
+import { PortalLayout } from "@/components/layout/PortalLayout";
 import { prisma } from "@/lib/prisma";
 
 const statusLabels: Record<WorkOrderStatus, string> = {
@@ -36,6 +38,7 @@ export default async function ClientPortalWorkOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   await connection();
+  const user = await requireUser();
 
   const { id } = await params;
 
@@ -54,9 +57,17 @@ export default async function ClientPortalWorkOrderDetailPage({
     notFound();
   }
 
+  if (user.role === "CLIENT" && workOrder.clientId !== user.clientId) {
+    notFound();
+  }
+
   return (
-    <main className="min-h-screen bg-zinc-50 px-6 py-10 text-zinc-950">
-      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+    <PortalLayout
+      role="CLIENT"
+      title="Client Portal"
+      subtitle="Work Order Detail"
+    >
+      <div className="flex max-w-4xl flex-col gap-6">
         <div>
           <Link
             href="/client-portal"
@@ -155,7 +166,7 @@ export default async function ClientPortalWorkOrderDetailPage({
           )}
         </section>
       </div>
-    </main>
+    </PortalLayout>
   );
 }
 

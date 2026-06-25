@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { WorkOrderStatus } from "@prisma/client";
+import { requireUser } from "@/lib/auth";
+import { PortalLayout } from "@/components/layout/PortalLayout";
 import { prisma } from "@/lib/prisma";
 
 const statusLabels: Record<WorkOrderStatus, string> = {
@@ -31,8 +33,15 @@ function formatDate(date: Date | null) {
 
 export default async function ClientPortalPage() {
   await connection();
+  const user = await requireUser();
 
   const workOrders = await prisma.workOrder.findMany({
+    where:
+      user.role === "CLIENT"
+        ? {
+            clientId: user.clientId ?? "__missing_client__",
+          }
+        : undefined,
     include: {
       client: true,
       equipment: true,
@@ -44,8 +53,12 @@ export default async function ClientPortalPage() {
   });
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-6 py-10 text-zinc-950">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8">
+    <PortalLayout
+      role="CLIENT"
+      title="Client Portal"
+      subtitle="Maintenance Monitoring"
+    >
+      <div className="flex flex-col gap-8">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-sm font-medium text-zinc-500">
@@ -61,10 +74,10 @@ export default async function ClientPortalPage() {
           </div>
 
           <Link
-            href="/dashboard"
+            href={user.role === "CLIENT" ? "/client-portal" : "/dashboard"}
             className="w-fit rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700"
           >
-            Admin Dashboard
+            {user.role === "CLIENT" ? user.name : "Admin Dashboard"}
           </Link>
         </div>
 
@@ -134,6 +147,6 @@ export default async function ClientPortalPage() {
           ) : null}
         </section>
       </div>
-    </main>
+    </PortalLayout>
   );
 }

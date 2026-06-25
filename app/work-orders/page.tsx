@@ -1,5 +1,22 @@
 import Link from "next/link";
+import { connection } from "next/server";
+import { WorkOrderStatus } from "@prisma/client";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 import { prisma } from "@/lib/prisma";
+
+const statusLabels: Record<WorkOrderStatus, string> = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+const statusStyles: Record<WorkOrderStatus, string> = {
+  PENDING: "bg-amber-50 text-amber-700 ring-amber-200",
+  IN_PROGRESS: "bg-blue-50 text-blue-700 ring-blue-200",
+  COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  CANCELLED: "bg-zinc-100 text-zinc-600 ring-zinc-200",
+};
 
 function formatDate(date: Date | null) {
   if (!date) {
@@ -14,10 +31,14 @@ function formatDate(date: Date | null) {
 }
 
 export default async function WorkOrdersPage() {
+  await connection();
+
   const workOrders = await prisma.workOrder.findMany({
     include: {
       client: true,
       equipment: true,
+      technician: true,
+      report: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -25,106 +46,98 @@ export default async function WorkOrdersPage() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-950 p-8 text-white">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex items-center justify-between gap-4">
+    <AdminLayout>
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-cyan-400">
-              Kaizen ServiceHub
-            </p>
-            <h1 className="mt-2 text-3xl font-bold">Work Orders</h1>
-            <p className="mt-2 text-slate-400">
-              Kelola jadwal dan progress pekerjaan maintenance.
+            <p className="text-sm font-medium text-zinc-500">Service</p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+              Work Orders
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm text-zinc-600">
+              Kelola jadwal, assignment teknisi, dan progress pekerjaan
+              maintenance.
             </p>
           </div>
 
           <Link
             href="/work-orders/create"
-            className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400"
+            className="w-fit rounded-md bg-zinc-950 px-4 py-2 text-sm font-medium text-white"
           >
-            + Add Work Order
+            Add Work Order
           </Link>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
-          <table className="w-full border-collapse text-left">
-            <thead className="bg-slate-800 text-sm text-slate-300">
-              <tr>
-                <th className="p-4">Work Order</th>
-                <th className="p-4">Client</th>
-                <th className="p-4">Equipment</th>
-                <th className="p-4">Schedule</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {workOrders.length === 0 ? (
+        <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[960px] text-left text-sm">
+              <thead className="border-b border-zinc-200 bg-zinc-100 text-xs uppercase text-zinc-500">
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-400">
-                    Belum ada work order.
-                  </td>
+                  <th className="px-5 py-3 font-semibold">Work Order</th>
+                  <th className="px-5 py-3 font-semibold">Client</th>
+                  <th className="px-5 py-3 font-semibold">Equipment</th>
+                  <th className="px-5 py-3 font-semibold">Technician</th>
+                  <th className="px-5 py-3 font-semibold">Schedule</th>
+                  <th className="px-5 py-3 font-semibold">Status</th>
+                  <th className="px-5 py-3 font-semibold">Report</th>
+                  <th className="px-5 py-3 font-semibold">Action</th>
                 </tr>
-              ) : (
-                workOrders.map((workOrder) => (
-                  <tr
-                    key={workOrder.id}
-                    className="border-t border-slate-800 text-sm"
-                  >
-                    <td className="p-4">
-                      <div className="font-semibold text-white">
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {workOrders.map((workOrder) => (
+                  <tr key={workOrder.id}>
+                    <td className="px-5 py-4">
+                      <p className="font-semibold text-zinc-950">
                         {workOrder.workOrderNo}
-                      </div>
-                      <div className="text-slate-400">{workOrder.title}</div>
+                      </p>
+                      <p className="mt-1 text-zinc-500">{workOrder.title}</p>
                     </td>
-
-                    <td className="p-4 text-slate-300">
+                    <td className="px-5 py-4 text-zinc-600">
                       {workOrder.client.name}
                     </td>
-
-                    <td className="p-4 text-slate-300">
-                      <div>{workOrder.equipment.name}</div>
-                      <div className="text-xs text-slate-500">
+                    <td className="px-5 py-4 text-zinc-600">
+                      <p>{workOrder.equipment.name}</p>
+                      <p className="text-xs text-zinc-400">
                         {workOrder.equipment.code}
-                      </div>
+                      </p>
                     </td>
-
-                    <td className="p-4 text-slate-300">
+                    <td className="px-5 py-4 text-zinc-600">
+                      {workOrder.technician?.name ?? "-"}
+                    </td>
+                    <td className="px-5 py-4 text-zinc-600">
                       {formatDate(workOrder.scheduledDate)}
                     </td>
-
-                    <td className="p-4">
-                      <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-400">
-                        {workOrder.status}
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${statusStyles[workOrder.status]}`}
+                      >
+                        {statusLabels[workOrder.status]}
                       </span>
                     </td>
-
-                    <td className="p-4 text-right">
+                    <td className="px-5 py-4 text-zinc-600">
+                      {workOrder.report ? "Available" : "-"}
+                    </td>
+                    <td className="px-5 py-4">
                       <Link
                         href={`/work-orders/${workOrder.id}`}
-                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-200 transition hover:border-cyan-400 hover:text-cyan-400"
+                        className="font-medium text-zinc-950 hover:underline"
                       >
                         Detail
                       </Link>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <div className="mt-6 flex gap-3">
-          <Link href="/clients" className="text-sm text-cyan-400">
-            Clients
-          </Link>
-          <span className="text-slate-600">/</span>
-          <Link href="/equipment" className="text-sm text-cyan-400">
-            Equipment
-          </Link>
-        </div>
+          {workOrders.length === 0 ? (
+            <div className="px-5 py-12 text-center text-sm text-zinc-500">
+              Belum ada work order.
+            </div>
+          ) : null}
+        </section>
       </div>
-    </main>
+    </AdminLayout>
   );
 }

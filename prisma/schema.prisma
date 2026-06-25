@@ -28,6 +28,13 @@ enum EquipmentStatus {
   INACTIVE
 }
 
+enum ServiceRequestStatus {
+  OPEN
+  REVIEWED
+  CONVERTED
+  CLOSED
+}
+
 model User {
   id       String @id @default(cuid())
   name     String
@@ -56,6 +63,7 @@ model Client {
   users      User[]
   equipment  Equipment[]
   workOrders WorkOrder[]
+  serviceRequests ServiceRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -75,6 +83,7 @@ model Equipment {
   description String?
 
   workOrders WorkOrder[]
+  serviceRequests ServiceRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -115,6 +124,25 @@ model MaintenanceReport {
   conditionAfter  String?
   recommendation  String?
   technicianNote  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceRequest {
+  id String @id @default(cuid())
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  equipmentId String?
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+
+  title       String
+  description String
+  location    String?
+  priority    String @default("NORMAL")
+  status      ServiceRequestStatus @default(OPEN)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
