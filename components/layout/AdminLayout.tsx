@@ -7,7 +7,7 @@ export async function AdminLayout({ children }: { children: ReactNode }) {
   await requireRole(["ADMIN"]);
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 lg:flex">
+    <div className="min-h-screen bg-slate-50 text-slate-950 lg:flex">
       <AdminSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopbar />

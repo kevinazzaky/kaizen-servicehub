@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { WorkOrderStatus } from "@prisma/client";
 import { requireUser } from "@/lib/auth";
 import { PortalLayout } from "@/components/layout/PortalLayout";
+import { ReportPhotos } from "@/components/reports/ReportPhotos";
 import { prisma } from "@/lib/prisma";
 
 const statusLabels: Record<WorkOrderStatus, string> = {
@@ -157,6 +158,10 @@ export default async function ClientPortalWorkOrderDetailPage({
               <ReportItem
                 label="Catatan Teknisi"
                 value={workOrder.report.technicianNote}
+              />
+              <ReportPhotos
+                beforePhotoUrl={workOrder.report.beforePhotoUrl}
+                afterPhotoUrl={workOrder.report.afterPhotoUrl}
               />
             </div>
           ) : (

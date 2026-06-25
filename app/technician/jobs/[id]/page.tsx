@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { WorkOrderStatus } from "@prisma/client";
 import { PortalLayout } from "@/components/layout/PortalLayout";
+import { ReportPhotoInputs, ReportPhotos } from "@/components/reports/ReportPhotos";
 import { requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveTechnicianReport, updateJobStatus } from "../actions";
@@ -202,6 +203,25 @@ export default async function TechnicianJobDetailPage({
               label="Catatan Teknisi"
               defaultValue={workOrder.report?.technicianNote ?? ""}
               placeholder="Catatan internal teknisi"
+            />
+
+            <div>
+              <h3 className="text-sm font-semibold">Foto Bukti Pekerjaan</h3>
+              <p className="mt-1 text-sm text-zinc-600">
+                Tambahkan foto before dan after equipment agar report memiliki
+                bukti visual.
+              </p>
+              <div className="mt-3">
+                <ReportPhotoInputs
+                  beforePhotoUrl={workOrder.report?.beforePhotoUrl}
+                  afterPhotoUrl={workOrder.report?.afterPhotoUrl}
+                />
+              </div>
+            </div>
+
+            <ReportPhotos
+              beforePhotoUrl={workOrder.report?.beforePhotoUrl}
+              afterPhotoUrl={workOrder.report?.afterPhotoUrl}
             />
 
             <div className="flex justify-end">

@@ -12,15 +12,15 @@ const navItems = [
 
 export function AdminSidebar() {
   return (
-    <aside className="border-b border-zinc-200 bg-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
+    <aside className="border-b border-white/10 bg-[#111827] text-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
       <div className="flex h-full flex-col gap-6 px-4 py-5">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-md bg-zinc-950 text-sm font-semibold text-white">
+          <span className="grid size-9 place-items-center rounded-md bg-black text-sm font-semibold text-[#f5b43b] shadow-sm ring-1 ring-white/10">
             K
           </span>
           <div>
-            <p className="font-semibold text-zinc-950">Kaizen</p>
-            <p className="text-xs text-zinc-500">ServiceHub</p>
+            <p className="font-semibold text-white">Kaizen</p>
+            <p className="text-xs text-slate-400">ServiceHub</p>
           </div>
         </Link>
 
@@ -29,9 +29,9 @@ export function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+              className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
-              <span className="grid size-7 place-items-center rounded-md border border-zinc-200 text-xs">
+              <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-xs text-[#f5b43b]">
                 {item.marker}
               </span>
               {item.label}

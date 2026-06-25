@@ -4,7 +4,10 @@ import type { Role } from "@prisma/client";
 import { logout } from "@/app/login/actions";
 import { requireRole } from "@/lib/auth";
 
-const portalNav: Record<Role, Array<{ href: string; label: string; marker: string }>> = {
+const portalNav: Record<
+  Role,
+  Array<{ href: string; label: string; marker: string }>
+> = {
   ADMIN: [
     { href: "/dashboard", label: "Dashboard", marker: "D" },
     { href: "/work-orders", label: "Work Orders", marker: "W" },
@@ -33,16 +36,16 @@ export async function PortalLayout({
   const navItems = portalNav[role];
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 lg:flex">
-      <aside className="border-b border-zinc-200 bg-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
+    <div className="min-h-screen bg-slate-50 text-slate-950 lg:flex">
+      <aside className="border-b border-white/10 bg-[#111827] text-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
         <div className="flex h-full flex-col gap-6 px-4 py-5">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-md bg-zinc-950 text-sm font-semibold text-white">
+            <span className="grid size-9 place-items-center rounded-md bg-black text-sm font-semibold text-[#f5b43b] shadow-sm ring-1 ring-white/10">
               K
             </span>
             <div>
-              <p className="font-semibold text-zinc-950">Kaizen</p>
-              <p className="text-xs text-zinc-500">ServiceHub</p>
+              <p className="font-semibold text-white">Kaizen</p>
+              <p className="text-xs text-slate-400">ServiceHub</p>
             </div>
           </Link>
 
@@ -51,9 +54,9 @@ export async function PortalLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
               >
-                <span className="grid size-7 place-items-center rounded-md border border-zinc-200 text-xs">
+                <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-xs text-[#f5b43b]">
                   {item.marker}
                 </span>
                 {item.label}
@@ -64,22 +67,22 @@ export async function PortalLayout({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-b border-zinc-200 bg-white px-6 py-4">
+        <header className="border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-zinc-500">{subtitle}</p>
-              <p className="text-lg font-semibold text-zinc-950">{title}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-blue-700">{subtitle}</p>
+              <p className="text-lg font-semibold text-slate-950">{title}</p>
             </div>
 
             <div className="flex items-center gap-3">
               <div className="hidden text-right sm:block">
-                <p className="text-sm font-medium text-zinc-950">{user.name}</p>
-                <p className="text-xs text-zinc-500">{user.role}</p>
+                <p className="text-sm font-medium text-slate-950">{user.name}</p>
+                <p className="text-xs text-slate-500">{user.role}</p>
               </div>
               <form action={logout}>
                 <button
                   type="submit"
-                  className="rounded-md border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100"
+                  className="rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950"
                 >
                   Logout
                 </button>

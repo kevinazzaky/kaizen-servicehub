@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { AdminLayout } from "@/components/layout/AdminLayout";
+import { ReportPhotos } from "@/components/reports/ReportPhotos";
 import { prisma } from "@/lib/prisma";
 import { deleteWorkOrder, updateWorkOrder } from "../actions";
 
@@ -216,6 +217,10 @@ export default async function WorkOrderDetailPage({
               <ReportItem
                 label="Catatan Teknisi"
                 value={workOrder.report.technicianNote}
+              />
+              <ReportPhotos
+                beforePhotoUrl={workOrder.report.beforePhotoUrl}
+                afterPhotoUrl={workOrder.report.afterPhotoUrl}
               />
             </div>
           ) : (

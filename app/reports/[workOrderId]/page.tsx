@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { AdminLayout } from "@/components/layout/AdminLayout";
+import { ReportPhotoInputs, ReportPhotos } from "@/components/reports/ReportPhotos";
 import { requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveMaintenanceReport } from "../actions";
@@ -90,6 +91,25 @@ export default async function ReportPage({ params }: ReportPageProps) {
               name="technicianNote"
               label="Catatan Teknisi"
               defaultValue={workOrder.report?.technicianNote ?? ""}
+            />
+
+            <div>
+              <h2 className="text-sm font-semibold">Foto Bukti Pekerjaan</h2>
+              <p className="mt-1 text-sm text-zinc-600">
+                Upload foto sebelum dan sesudah maintenance sebagai bukti
+                pekerjaan.
+              </p>
+              <div className="mt-3">
+                <ReportPhotoInputs
+                  beforePhotoUrl={workOrder.report?.beforePhotoUrl}
+                  afterPhotoUrl={workOrder.report?.afterPhotoUrl}
+                />
+              </div>
+            </div>
+
+            <ReportPhotos
+              beforePhotoUrl={workOrder.report?.beforePhotoUrl}
+              afterPhotoUrl={workOrder.report?.afterPhotoUrl}
             />
 
             <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">

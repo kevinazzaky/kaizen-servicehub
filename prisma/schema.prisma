@@ -124,6 +124,8 @@ model MaintenanceReport {
   conditionAfter  String?
   recommendation  String?
   technicianNote  String?
+  beforePhotoUrl  String?
+  afterPhotoUrl   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

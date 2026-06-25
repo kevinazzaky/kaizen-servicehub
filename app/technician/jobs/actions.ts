@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { getString } from "@/lib/form-data";
+import { saveReportPhoto } from "@/lib/report-photos";
 import {
   saveTechnicianJobReport,
   updateTechnicianJobStatus,
@@ -29,6 +30,16 @@ export async function saveTechnicianReport(
   formData: FormData,
 ) {
   const user = await requireRole(["ADMIN", "TECHNICIAN"]);
+  const beforePhotoUrl = await saveReportPhoto(
+    formData.get("beforePhoto"),
+    workOrderId,
+    "before",
+  );
+  const afterPhotoUrl = await saveReportPhoto(
+    formData.get("afterPhoto"),
+    workOrderId,
+    "after",
+  );
 
   await saveTechnicianJobReport(
     workOrderId,
@@ -38,6 +49,8 @@ export async function saveTechnicianReport(
       conditionAfter: getString(formData, "conditionAfter"),
       recommendation: getString(formData, "recommendation"),
       technicianNote: getString(formData, "technicianNote"),
+      ...(beforePhotoUrl ? { beforePhotoUrl } : {}),
+      ...(afterPhotoUrl ? { afterPhotoUrl } : {}),
     },
     user,
   );
@@ -45,5 +58,5 @@ export async function saveTechnicianReport(
   revalidatePath("/technician/jobs");
   revalidatePath(`/technician/jobs/${workOrderId}`);
   revalidatePath(`/client-portal/work-orders/${workOrderId}`);
-  redirect(`/technician/jobs/${workOrderId}`);
+  redirect("/technician/jobs");
 }

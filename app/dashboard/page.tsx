@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { EquipmentStatus, WorkOrderStatus } from "@prisma/client";
+import { WorkOrderStatus } from "@prisma/client";
 import { AdminLayout } from "@/components/layout/AdminLayout";
-import { prisma } from "@/lib/prisma";
+import {
+  getDashboardOverview,
+  type DashboardOverview,
+} from "@/modules/dashboard/service";
 
 const statusLabels: Record<WorkOrderStatus, string> = {
   PENDING: "Pending",
@@ -21,7 +24,29 @@ const statusStyles: Record<WorkOrderStatus, string> = {
 export default async function DashboardPage() {
   await connection();
 
-  const [
+  const fallbackDashboard: DashboardOverview = {
+    totalClients: 0,
+    totalEquipment: 0,
+    totalWorkOrders: 0,
+    pendingWorkOrders: 0,
+    inProgressWorkOrders: 0,
+    completedWorkOrders: 0,
+    cancelledWorkOrders: 0,
+    equipmentNeedMaintenance: 0,
+    recentWorkOrders: [],
+  };
+
+  let databaseError = false;
+  let dashboard: DashboardOverview = fallbackDashboard;
+
+  try {
+    dashboard = await getDashboardOverview();
+  } catch (error) {
+    databaseError = true;
+    console.error("Failed to load dashboard overview", error);
+  }
+
+  const {
     totalClients,
     totalEquipment,
     totalWorkOrders,
@@ -31,26 +56,7 @@ export default async function DashboardPage() {
     cancelledWorkOrders,
     equipmentNeedMaintenance,
     recentWorkOrders,
-  ] = await Promise.all([
-    prisma.client.count(),
-    prisma.equipment.count(),
-    prisma.workOrder.count(),
-    prisma.workOrder.count({ where: { status: WorkOrderStatus.PENDING } }),
-    prisma.workOrder.count({ where: { status: WorkOrderStatus.IN_PROGRESS } }),
-    prisma.workOrder.count({ where: { status: WorkOrderStatus.COMPLETED } }),
-    prisma.workOrder.count({ where: { status: WorkOrderStatus.CANCELLED } }),
-    prisma.equipment.count({
-      where: { status: EquipmentStatus.NEED_MAINTENANCE },
-    }),
-    prisma.workOrder.findMany({
-      take: 5,
-      orderBy: { createdAt: "desc" },
-      include: {
-        client: true,
-        equipment: true,
-      },
-    }),
-  ]);
+  } = dashboard;
 
   const summaryCards = [
     { label: "Total Clients", value: totalClients, href: "/clients" },
@@ -94,6 +100,13 @@ export default async function DashboardPage() {
             New Work Order
           </Link>
         </div>
+
+        {databaseError ? (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800">
+            Dashboard belum bisa mengambil data dari database. Cek koneksi
+            internet atau status database Neon, lalu refresh halaman.
+          </div>
+        ) : null}
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {summaryCards.map((card) => (

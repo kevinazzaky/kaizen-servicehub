@@ -7,6 +7,8 @@ export type MaintenanceReportInput = {
   conditionAfter: string | null;
   recommendation: string | null;
   technicianNote: string | null;
+  beforePhotoUrl?: string;
+  afterPhotoUrl?: string;
 };
 
 export async function saveMaintenanceReportRecord(
