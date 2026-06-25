@@ -1,14 +1,16 @@
 import Image from "next/image";
 import { MarketingIcon } from "./MarketingIcon";
+import type { MarketingIconName } from "./MarketingIcon";
 
-const progressItems = [
-  { label: "Request", value: "Client", icon: "request" },
-  { label: "Work Order", value: "Admin", icon: "workflow" },
-  { label: "Progress", value: "Teknisi", icon: "technician" },
-  { label: "Report", value: "Client", icon: "report" },
-] as const;
-
-export function MonitoringPreview() {
+export function MonitoringPreview({
+  items,
+}: {
+  items: ReadonlyArray<{
+    label: string;
+    value: string;
+    icon: MarketingIconName;
+  }>;
+}) {
   return (
     <div className="relative min-h-[430px] animate-fade-up lg:min-h-[500px]">
       <div className="absolute left-1/2 top-1/2 grid size-56 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/30 backdrop-blur sm:size-64">
@@ -26,7 +28,7 @@ export function MonitoringPreview() {
 
       <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-white/10" />
 
-      {progressItems.map((item, index) => (
+      {items.map((item, index) => (
         <div
           key={item.label}
           className={`animate-float-soft absolute w-40 rounded-2xl border border-white/10 bg-white/[0.07] p-4 text-white shadow-lg shadow-black/20 backdrop-blur transition hover:bg-white/[0.1] ${

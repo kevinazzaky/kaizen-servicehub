@@ -22,7 +22,7 @@ export default async function CreateClientRequestPage() {
   return (
     <PortalLayout
       role="CLIENT"
-      title="Client Portal"
+      title="Client Workspace"
       subtitle="New Service Request"
     >
       <div className="max-w-3xl">

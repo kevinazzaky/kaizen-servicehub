@@ -1,39 +1,40 @@
-import { serviceHighlights } from "@/lib/marketing-data";
+import type { MarketingCopy } from "@/lib/marketing-data";
 import { MarketingIcon, type MarketingIconName } from "./MarketingIcon";
 
-export function ServicesPreviewSection() {
+export function ServicesPreviewSection({ copy }: { copy: MarketingCopy }) {
+  const section = copy.highlightsSection;
+
   return (
-    <section id="services" className="bg-white px-6 py-16 text-slate-950">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:items-center">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-700">
-            Keunggulan Sistem
+    <section id="services" className="bg-white px-6 py-20 text-slate-950">
+      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:items-stretch">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#b47a12]">
+            {section.eyebrow}
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight">
-            Dibuat untuk membuat kerja sama maintenance lebih rapi.
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight">
+            {section.title}
           </h2>
-          <p className="mt-4 leading-7 text-slate-600">
-            ServiceHub bukan hanya halaman promosi. Sistem ini membantu tim
-            service mencatat pekerjaan, membuktikan hasil maintenance, dan
-            memberi client akses monitoring yang jelas.
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            {section.description}
           </p>
+          <div className="mt-6 h-1.5 w-20 rounded-full bg-[#f5b43b]" />
         </div>
 
-        <div className="grid gap-4">
-          {serviceHighlights.map((item) => (
+        <div className="grid gap-3 md:grid-cols-2">
+          {section.items.map((item) => (
             <div
               key={item.title}
-              className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-0.5 hover:border-[#f5b43b]/50 hover:bg-white hover:shadow-md"
+              className="group flex gap-4 rounded-2xl border border-slate-200 border-l-[#f5b43b] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#f5b43b]/70 hover:bg-[#fffaf0] hover:shadow-md"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-950 text-[#f5b43b]">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-slate-950 text-[#f5b43b] transition group-hover:bg-[#f5b43b] group-hover:text-slate-950">
                 <MarketingIcon
                   name={item.icon as MarketingIconName}
-                  className="size-5"
+                  className="size-4"
                 />
               </span>
               <div>
-                <h3 className="font-bold">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <h3 className="font-extrabold text-slate-950">{item.title}</h3>
+                <p className="mt-1.5 text-sm font-medium leading-6 text-slate-600">
                   {item.description}
                 </p>
               </div>

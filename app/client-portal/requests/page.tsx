@@ -43,7 +43,7 @@ export default async function ClientRequestsPage() {
   return (
     <PortalLayout
       role="CLIENT"
-      title="Client Portal"
+      title="Client Workspace"
       subtitle="Service Requests"
     >
       <div className="flex flex-col gap-8">

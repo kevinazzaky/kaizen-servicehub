@@ -1,13 +1,18 @@
 import Link from "next/link";
+import { LayoutIcon, type LayoutIconName } from "./LayoutIcon";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", marker: "D" },
-  { href: "/clients", label: "Clients", marker: "C" },
-  { href: "/equipment", label: "Equipment", marker: "E" },
-  { href: "/work-orders", label: "Work Orders", marker: "W" },
-  { href: "/service-requests", label: "Requests", marker: "R" },
-  { href: "/team", label: "Team", marker: "T" },
-  { href: "/client-portal", label: "Client Portal", marker: "P" },
+const navItems: Array<{
+  href: string;
+  label: string;
+  icon: LayoutIconName;
+}> = [
+  { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
+  { href: "/clients", label: "Clients", icon: "clients" },
+  { href: "/equipment", label: "Equipment", icon: "equipment" },
+  { href: "/work-orders", label: "Work Orders", icon: "workOrders" },
+  { href: "/service-requests", label: "Requests", icon: "requests" },
+  { href: "/team", label: "Team", icon: "team" },
+  { href: "/client-portal", label: "Client Access", icon: "clientAccess" },
 ];
 
 export function AdminSidebar() {
@@ -18,9 +23,16 @@ export function AdminSidebar() {
           <span className="grid size-9 place-items-center rounded-md bg-black text-sm font-semibold text-[#f5b43b] shadow-sm ring-1 ring-white/10">
             K
           </span>
-          <div>
-            <p className="font-semibold text-white">Kaizen</p>
-            <p className="text-xs text-slate-400">ServiceHub</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="truncate text-sm font-semibold text-white">
+                Kaizen Utama Teknik
+              </p>
+              <span className="rounded-full border border-[#f5b43b]/30 bg-[#f5b43b]/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#f5b43b]">
+                Hub
+              </span>
+            </div>
+            <p className="mt-0.5 text-xs text-slate-400">ServiceHub</p>
           </div>
         </Link>
 
@@ -31,8 +43,8 @@ export function AdminSidebar() {
               href={item.href}
               className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
-              <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-xs text-[#f5b43b]">
-                {item.marker}
+              <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-[#f5b43b]">
+                <LayoutIcon name={item.icon} className="size-4" />
               </span>
               {item.label}
             </Link>

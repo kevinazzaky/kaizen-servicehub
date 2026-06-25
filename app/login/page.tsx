@@ -144,7 +144,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
               <div className="mt-5 border-t border-slate-200 pt-5">
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-blue-700">
-                  Login Portal
+                  System Access
                 </p>
                 <h2 className="mt-1 text-2xl font-semibold text-slate-950">
                   {getRoleTitle(selectedRole)}
@@ -175,14 +175,14 @@ function getSelectedRole(role: string | undefined): Role {
 
 function getRoleTitle(role: Role) {
   if (role === "ADMIN") {
-    return "Admin Portal";
+    return "Admin Console";
   }
 
   if (role === "TECHNICIAN") {
-    return "Technician Portal";
+    return "Technician Workspace";
   }
 
-  return "Client Portal";
+  return "Client Workspace";
 }
 
 function getRoleDescription(role: Role) {

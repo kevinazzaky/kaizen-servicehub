@@ -3,23 +3,28 @@ import type { ReactNode } from "react";
 import type { Role } from "@prisma/client";
 import { logout } from "@/app/login/actions";
 import { requireRole } from "@/lib/auth";
+import { LayoutIcon, type LayoutIconName } from "./LayoutIcon";
 
 const portalNav: Record<
   Role,
-  Array<{ href: string; label: string; marker: string }>
+  Array<{ href: string; label: string; icon: LayoutIconName }>
 > = {
   ADMIN: [
-    { href: "/dashboard", label: "Dashboard", marker: "D" },
-    { href: "/work-orders", label: "Work Orders", marker: "W" },
+    { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
+    { href: "/work-orders", label: "Work Orders", icon: "workOrders" },
   ],
   TECHNICIAN: [
-    { href: "/technician/jobs", label: "My Jobs", marker: "J" },
+    { href: "/technician/jobs", label: "My Jobs", icon: "jobs" },
   ],
   CLIENT: [
-    { href: "/client-portal", label: "Work Orders", marker: "W" },
-    { href: "/client-portal/requests", label: "Requests", marker: "R" },
+    { href: "/client-portal", label: "Work Orders", icon: "workOrders" },
+    { href: "/client-portal/requests", label: "Requests", icon: "requests" },
   ],
 };
+
+function getInitial(name: string) {
+  return name.trim().charAt(0).toUpperCase() || "U";
+}
 
 export async function PortalLayout({
   role,
@@ -43,9 +48,16 @@ export async function PortalLayout({
             <span className="grid size-9 place-items-center rounded-md bg-black text-sm font-semibold text-[#f5b43b] shadow-sm ring-1 ring-white/10">
               K
             </span>
-            <div>
-              <p className="font-semibold text-white">Kaizen</p>
-              <p className="text-xs text-slate-400">ServiceHub</p>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold text-white">
+                  Kaizen Utama Teknik
+                </p>
+                <span className="rounded-full border border-[#f5b43b]/30 bg-[#f5b43b]/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#f5b43b]">
+                  Hub
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-slate-400">ServiceHub</p>
             </div>
           </Link>
 
@@ -56,8 +68,8 @@ export async function PortalLayout({
                 href={item.href}
                 className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
               >
-                <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-xs text-[#f5b43b]">
-                  {item.marker}
+                <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-[#f5b43b]">
+                  <LayoutIcon name={item.icon} className="size-4" />
                 </span>
                 {item.label}
               </Link>
@@ -70,20 +82,32 @@ export async function PortalLayout({
         <header className="border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-blue-700">{subtitle}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b47a12]">
+                {subtitle}
+              </p>
               <p className="text-lg font-semibold text-slate-950">{title}</p>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden text-right sm:block">
-                <p className="text-sm font-medium text-slate-950">{user.name}</p>
-                <p className="text-xs text-slate-500">{user.role}</p>
+              <div className="hidden items-center gap-3 rounded-full border border-slate-200 bg-slate-50 py-1.5 pl-1.5 pr-4 shadow-sm sm:flex">
+                <span className="grid size-9 place-items-center rounded-full bg-[#111827] text-sm font-semibold text-[#f5b43b] ring-1 ring-slate-900/10">
+                  {getInitial(user.name)}
+                </span>
+                <div className="text-left">
+                  <p className="max-w-36 truncate text-sm font-semibold text-slate-950">
+                    {user.name}
+                  </p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    {user.role}
+                  </p>
+                </div>
               </div>
               <form action={logout}>
                 <button
                   type="submit"
-                  className="rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950"
                 >
+                  <LayoutIcon name="logout" className="size-4" />
                   Logout
                 </button>
               </form>

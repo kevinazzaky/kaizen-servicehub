@@ -65,7 +65,7 @@ export default async function ClientPortalWorkOrderDetailPage({
   return (
     <PortalLayout
       role="CLIENT"
-      title="Client Portal"
+      title="Client Workspace"
       subtitle="Work Order Detail"
     >
       <div className="flex max-w-4xl flex-col gap-6">

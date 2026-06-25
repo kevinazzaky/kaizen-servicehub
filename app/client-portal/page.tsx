@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { WorkOrderStatus } from "@prisma/client";
 import { requireUser } from "@/lib/auth";
 import { PortalLayout } from "@/components/layout/PortalLayout";
+import { LayoutIcon, type LayoutIconName } from "@/components/layout/LayoutIcon";
 import { prisma } from "@/lib/prisma";
 
 const statusLabels: Record<WorkOrderStatus, string> = {
@@ -52,39 +53,104 @@ export default async function ClientPortalPage() {
     },
   });
 
+  const pendingCount = workOrders.filter(
+    (workOrder) => workOrder.status === "PENDING",
+  ).length;
+  const inProgressCount = workOrders.filter(
+    (workOrder) => workOrder.status === "IN_PROGRESS",
+  ).length;
+  const availableReports = workOrders.filter((workOrder) => workOrder.report)
+    .length;
+
+  const metrics = [
+    {
+      label: "Total Work Orders",
+      value: String(workOrders.length),
+      description: "All visible jobs",
+      icon: "workOrders",
+    },
+    {
+      label: "Pending",
+      value: String(pendingCount),
+      description: "Waiting for action",
+      icon: "requests",
+    },
+    {
+      label: "In Progress",
+      value: String(inProgressCount),
+      description: "Currently handled",
+      icon: "jobs",
+    },
+    {
+      label: "Reports",
+      value: String(availableReports),
+      description: "Completed evidence",
+      icon: "clientAccess",
+    },
+  ] satisfies Array<{
+    label: string;
+    value: string;
+    description: string;
+    icon: LayoutIconName;
+  }>;
+
   return (
     <PortalLayout
       role="CLIENT"
-      title="Client Portal"
+      title="Client Workspace"
       subtitle="Maintenance Monitoring"
     >
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <p className="text-sm font-medium text-zinc-500">
-              Kaizen ServiceHub
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
-              Client Portal
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-zinc-600">
-              Monitor progress pekerjaan maintenance dan lihat laporan yang
-              sudah selesai.
-            </p>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b47a12]">
+                Kaizen ServiceHub
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+                Client Workspace
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Monitor progress pekerjaan maintenance, jadwal equipment, dan
+                report yang sudah selesai.
+              </p>
+            </div>
+
+            <Link
+              href={user.role === "CLIENT" ? "/client-portal/requests/create" : "/dashboard"}
+              className="w-fit rounded-md bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              {user.role === "CLIENT" ? "Create Request" : "Admin Dashboard"}
+            </Link>
           </div>
+        </section>
 
-          <Link
-            href={user.role === "CLIENT" ? "/client-portal" : "/dashboard"}
-            className="w-fit rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700"
-          >
-            {user.role === "CLIENT" ? user.name : "Admin Dashboard"}
-          </Link>
-        </div>
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {metrics.map((metric) => (
+            <Metric key={metric.label} {...metric} />
+          ))}
+        </section>
 
-        <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex items-center justify-between gap-4 p-5">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                Work Orders
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-slate-950">
+                Maintenance Progress
+              </h2>
+            </div>
+            <Link
+              href="/client-portal/requests"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-950"
+            >
+              View requests
+            </Link>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[840px] text-left text-sm">
-              <thead className="border-b border-zinc-200 bg-zinc-100 text-xs uppercase text-zinc-500">
+              <thead className="border-y border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
                   <th className="px-5 py-3 font-semibold">Work Order</th>
                   <th className="px-5 py-3 font-semibold">Client</th>
@@ -95,9 +161,9 @@ export default async function ClientPortalPage() {
                   <th className="px-5 py-3 font-semibold">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-slate-100">
                 {workOrders.map((workOrder) => (
-                  <tr key={workOrder.id}>
+                  <tr key={workOrder.id} className="hover:bg-slate-50/70">
                     <td className="px-5 py-4">
                       <p className="font-semibold text-zinc-950">
                         {workOrder.workOrderNo}
@@ -123,13 +189,21 @@ export default async function ClientPortalPage() {
                         {statusLabels[workOrder.status]}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-zinc-600">
-                      {workOrder.report ? "Available" : "-"}
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${
+                          workOrder.report
+                            ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+                            : "bg-slate-100 text-slate-500 ring-slate-200"
+                        }`}
+                      >
+                        {workOrder.report ? "Available" : "Pending"}
+                      </span>
                     </td>
                     <td className="px-5 py-4">
                       <Link
                         href={`/client-portal/work-orders/${workOrder.id}`}
-                        className="font-medium text-zinc-950 hover:underline"
+                        className="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950"
                       >
                         View
                       </Link>
@@ -148,5 +222,32 @@ export default async function ClientPortalPage() {
         </section>
       </div>
     </PortalLayout>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  description,
+  icon,
+}: {
+  label: string;
+  value: string;
+  description: string;
+  icon: LayoutIconName;
+}) {
+  return (
+    <div className="group rounded-2xl border border-slate-200 border-l-[#f5b43b] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#f5b43b]/70 hover:shadow-md">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-slate-500">{label}</p>
+          <p className="mt-3 text-3xl font-semibold text-slate-950">{value}</p>
+        </div>
+        <span className="grid size-10 place-items-center rounded-xl bg-slate-950 text-[#f5b43b] transition group-hover:bg-[#f5b43b] group-hover:text-slate-950">
+          <LayoutIcon name={icon} className="size-5" />
+        </span>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-500">{description}</p>
+    </div>
   );
 }
