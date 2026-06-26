@@ -14,7 +14,7 @@ export function MonitoringPreview({
   return (
     <div className="relative min-h-[430px] animate-fade-up lg:min-h-[500px]">
       <div className="absolute left-1/2 top-1/2 grid size-56 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/30 backdrop-blur sm:size-64">
-        <div className="animate-soft-glow grid size-32 place-items-center rounded-3xl bg-black shadow-xl shadow-black/30 ring-1 ring-white/10 sm:size-36">
+        <div className="animate-soft-glow grid size-32 place-items-center rounded-[2rem] bg-black shadow-xl shadow-black/30 ring-1 ring-white/10 sm:size-36">
           <Image
             src="/images/hero/logo-kaizen.png"
             alt="Kaizen logo"
@@ -31,7 +31,7 @@ export function MonitoringPreview({
       {items.map((item, index) => (
         <div
           key={item.label}
-          className={`animate-float-soft absolute w-40 rounded-2xl border border-white/10 bg-white/[0.07] p-4 text-white shadow-lg shadow-black/20 backdrop-blur transition hover:bg-white/[0.1] ${
+          className={`animate-float-soft absolute w-40 rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-white shadow-lg shadow-black/20 backdrop-blur transition hover:bg-white/[0.1] ${
             index === 0
               ? "left-0 top-8"
               : index === 1
@@ -43,7 +43,7 @@ export function MonitoringPreview({
           style={{ animationDelay: `${index * 220}ms` }}
         >
           <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-xl bg-[#f5b43b] text-slate-950">
+            <span className="grid size-9 place-items-center rounded-2xl bg-[#f5b43b] text-slate-950">
               <MarketingIcon name={item.icon} className="size-4" />
             </span>
             <div>

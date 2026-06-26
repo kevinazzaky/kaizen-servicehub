@@ -38,7 +38,7 @@ const marketingCopy = {
       { label: "Kontak", href: "#contact" },
     ],
     hero: {
-      title: "ServiceFlow untuk maintenance yang lebih transparan.",
+      title: "Maintenance lebih rapi.",
       description:
         "Satu alur untuk request client, work order, pekerjaan teknisi, dan report dengan bukti foto.",
       primaryCta: "Client Access",
@@ -175,7 +175,7 @@ const marketingCopy = {
       { label: "Contact", href: "#contact" },
     ],
     hero: {
-      title: "ServiceFlow for clearer maintenance operations.",
+      title: "Cleaner maintenance.",
       description:
         "One flow for client requests, work orders, technician tasks, and photo-backed service reports.",
       primaryCta: "Client Access",

@@ -23,7 +23,7 @@ export function WorkflowSection({ copy }: { copy: MarketingCopy }) {
           {section.items.map((item, index) => (
             <div
               key={item.title}
-              className="rounded-2xl border border-white/15 bg-white/10 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
+              className="rounded-3xl border border-white/15 bg-white/10 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
             >
               <span className="grid size-10 place-items-center rounded-full bg-[#f5b43b] text-slate-950">
                 <MarketingIcon

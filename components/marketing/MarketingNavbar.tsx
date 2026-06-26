@@ -7,7 +7,7 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0f17]/88 px-6 py-4 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-md bg-black ring-1 ring-white/10">
+          <span className="grid size-10 place-items-center rounded-2xl bg-black ring-1 ring-white/10">
             <Image
               src="/images/hero/logo-kaizen.png"
               alt="Kaizen logo"
@@ -41,10 +41,10 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <div className="hidden rounded-md border border-white/15 bg-white/5 p-1 sm:flex">
+          <div className="hidden rounded-full border border-white/15 bg-white/5 p-1 sm:flex">
             <Link
               href="/?lang=id"
-              className={`rounded px-2.5 py-1.5 text-xs font-bold transition ${
+              className={`rounded-full px-2.5 py-1.5 text-xs font-bold transition ${
                 copy.langLabel === "ID"
                   ? "bg-white text-slate-950"
                   : "text-slate-300 hover:text-white"
@@ -54,7 +54,7 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
             </Link>
             <Link
               href="/?lang=en"
-              className={`rounded px-2.5 py-1.5 text-xs font-bold transition ${
+              className={`rounded-full px-2.5 py-1.5 text-xs font-bold transition ${
                 copy.langLabel === "EN"
                   ? "bg-white text-slate-950"
                   : "text-slate-300 hover:text-white"
@@ -66,7 +66,7 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
 
           <Link
             href="/login?role=CLIENT"
-            className="rounded-md bg-[#f5b43b] px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a]"
+            className="rounded-full bg-[#f5b43b] px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a]"
           >
             Client Access
           </Link>

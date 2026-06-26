@@ -32,7 +32,7 @@ export function MarketingHero({
           <div className="animate-fade-up mt-7 flex flex-col gap-3 [animation-delay:320ms] sm:flex-row">
             <Link
               href="/login?role=CLIENT"
-              className="inline-flex items-center justify-center rounded-md bg-[#f5b43b] px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a]"
+              className="inline-flex items-center justify-center rounded-full bg-[#f5b43b] px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a]"
             >
               {copy.hero.primaryCta}
             </Link>
@@ -40,7 +40,7 @@ export function MarketingHero({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               {copy.hero.secondaryCta}
             </Link>
@@ -50,7 +50,7 @@ export function MarketingHero({
             {copy.stats.map((item, index) => (
               <div
                 key={item.label}
-                className="animate-fade-up rounded-lg border border-white/10 bg-white/[0.04] p-4 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.08]"
+                className="animate-fade-up rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.08]"
                 style={{ animationDelay: `${420 + index * 90}ms` }}
               >
                 <p className="text-lg font-bold text-white">

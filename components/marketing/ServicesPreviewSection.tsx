@@ -7,7 +7,7 @@ export function ServicesPreviewSection({ copy }: { copy: MarketingCopy }) {
   return (
     <section id="services" className="bg-white px-6 py-20 text-slate-950">
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:items-stretch">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#b47a12]">
             {section.eyebrow}
           </p>
@@ -24,9 +24,9 @@ export function ServicesPreviewSection({ copy }: { copy: MarketingCopy }) {
           {section.items.map((item) => (
             <div
               key={item.title}
-              className="group flex gap-4 rounded-2xl border border-slate-200 border-l-[#f5b43b] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#f5b43b]/70 hover:bg-[#fffaf0] hover:shadow-md"
+              className="group flex gap-4 rounded-3xl border border-slate-200 border-l-[#f5b43b] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#f5b43b]/70 hover:bg-[#fffaf0] hover:shadow-md"
             >
-              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-slate-950 text-[#f5b43b] transition group-hover:bg-[#f5b43b] group-hover:text-slate-950">
+              <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-slate-950 text-[#f5b43b] transition group-hover:bg-[#f5b43b] group-hover:text-slate-950">
                 <MarketingIcon
                   name={item.icon as MarketingIconName}
                   className="size-4"

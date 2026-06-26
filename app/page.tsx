@@ -18,7 +18,7 @@ type HomeProps = {
 
 export default async function Home({ searchParams }: HomeProps) {
   const query = await searchParams;
-  const lang: MarketingLang = query.lang === "en" ? "en" : "id";
+  const lang: MarketingLang = query.lang === "id" ? "id" : "en";
   const copy = getMarketingCopy(lang);
 
   return (
