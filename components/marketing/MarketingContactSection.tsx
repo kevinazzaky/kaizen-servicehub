@@ -15,13 +15,13 @@ export function MarketingContactSection({
   const whatsappUrl = getWhatsappUrl(lang);
 
   return (
-    <section id="contact" className="bg-[#f8fafc] px-6 py-16 text-slate-950">
-      <div className="mx-auto max-w-7xl rounded-3xl bg-[linear-gradient(135deg,#0b0f17,#111827_62%,#202a3a)] px-6 py-10 text-white shadow-xl shadow-slate-200 md:flex md:items-center md:justify-between">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f5b43b]">
+    <section id="contact" className="bg-[#f8fafc] px-4 py-14 text-slate-950 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-7xl rounded-2xl bg-[linear-gradient(135deg,#0b0f17,#111827_62%,#202a3a)] px-5 py-8 text-white shadow-xl shadow-slate-200 sm:rounded-3xl sm:px-6 sm:py-10 md:flex md:items-center md:justify-between md:gap-6">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#f5b43b] sm:text-sm sm:tracking-[0.2em]">
             {copy.contact.eyebrow}
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight">
+          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             {copy.contact.title}
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
@@ -29,7 +29,7 @@ export function MarketingContactSection({
           </p>
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row md:mt-0">
+        <div className="mt-6 flex shrink-0 flex-col gap-3 sm:flex-row md:mt-0">
           <Link
             href={whatsappUrl}
             target="_blank"

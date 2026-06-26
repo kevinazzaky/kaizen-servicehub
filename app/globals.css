@@ -16,10 +16,25 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Geist", Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
 }
 
 ::selection {

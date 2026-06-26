@@ -4,10 +4,10 @@ import { companyProfile, type MarketingCopy } from "@/lib/marketing-data";
 
 export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0f17]/88 px-6 py-4 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-black ring-1 ring-white/10">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0f17]/88 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
+        <Link href="/" className="flex min-w-0 flex-1 items-center gap-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-black ring-1 ring-white/10 sm:size-10 sm:rounded-2xl">
             <Image
               src="/images/hero/logo-kaizen.png"
               alt="Kaizen logo"
@@ -22,11 +22,11 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
               <p className="truncate text-sm font-semibold text-white">
                 {companyProfile.name}
               </p>
-              <span className="rounded-full border border-[#f5b43b]/30 bg-[#f5b43b]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5b43b]">
+              <span className="hidden rounded-full border border-[#f5b43b]/30 bg-[#f5b43b]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5b43b] min-[430px]:inline-flex">
                 ServiceHub
               </span>
             </div>
-            <p className="mt-0.5 text-[11px] text-slate-400">
+            <p className="mt-0.5 hidden truncate text-[11px] text-slate-400 sm:block">
               Maintenance Management System
             </p>
           </div>
@@ -66,9 +66,9 @@ export function MarketingNavbar({ copy }: { copy: MarketingCopy }) {
 
           <Link
             href="/login?role=CLIENT"
-            className="rounded-full bg-[#f5b43b] px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a]"
+            className="shrink-0 rounded-full bg-[#f5b43b] px-3 py-2 text-sm font-bold text-slate-950 transition hover:bg-[#ffc65a] sm:px-4"
           >
-            Client Access
+            <span className="hidden min-[420px]:inline">Client </span>Access
           </Link>
         </div>
       </div>

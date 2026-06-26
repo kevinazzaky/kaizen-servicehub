@@ -68,7 +68,7 @@ export default async function ClientsPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b47a12]">
                 Customers
               </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl text-slate-950">
                 Clients
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
@@ -98,7 +98,7 @@ export default async function ClientsPage() {
                   <p className="text-sm font-medium text-slate-500">
                     {metric.label}
                   </p>
-                  <p className="mt-3 text-3xl font-semibold text-slate-950">
+                  <p className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
                     {metric.value}
                   </p>
                 </div>

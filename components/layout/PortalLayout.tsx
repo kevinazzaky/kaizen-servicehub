@@ -43,8 +43,8 @@ export async function PortalLayout({
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950 lg:flex">
       <aside className="border-b border-white/10 bg-[#111827] text-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
-        <div className="flex h-full flex-col gap-6 px-4 py-5">
-          <Link href="/" className="flex items-center gap-3">
+        <div className="flex h-full flex-col gap-5 px-4 py-4 sm:gap-6 sm:py-5">
+          <Link href="/" className="flex min-w-0 items-center gap-3">
             <span className="grid size-9 place-items-center rounded-md bg-black text-sm font-semibold text-[#f5b43b] shadow-sm ring-1 ring-white/10">
               K
             </span>
@@ -61,12 +61,12 @@ export async function PortalLayout({
             </div>
           </Link>
 
-          <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+          <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex min-w-fit items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+                className="flex min-w-fit shrink-0 items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
               >
                 <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-white/5 text-[#f5b43b]">
                   <LayoutIcon name={item.icon} className="size-4" />
@@ -79,16 +79,18 @@ export async function PortalLayout({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
-          <div className="flex items-center justify-between gap-4">
-            <div>
+        <header className="border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+            <div className="min-w-0">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b47a12]">
                 {subtitle}
               </p>
-              <p className="text-lg font-semibold text-slate-950">{title}</p>
+              <p className="truncate text-base font-semibold text-slate-950 sm:text-lg">
+                {title}
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <div className="hidden items-center gap-3 rounded-full border border-slate-200 bg-slate-50 py-1.5 pl-1.5 pr-4 shadow-sm sm:flex">
                 <span className="grid size-9 place-items-center rounded-full bg-[#111827] text-sm font-semibold text-[#f5b43b] ring-1 ring-slate-900/10">
                   {getInitial(user.name)}
@@ -105,7 +107,7 @@ export async function PortalLayout({
               <form action={logout}>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-[#f5b43b]/70 hover:bg-amber-50 hover:text-slate-950 sm:px-3.5"
                 >
                   <LayoutIcon name="logout" className="size-4" />
                   Logout
@@ -115,7 +117,9 @@ export async function PortalLayout({
           </div>
         </header>
 
-        <main className="flex-1 px-6 py-8">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+          {children}
+        </main>
       </div>
     </div>
   );

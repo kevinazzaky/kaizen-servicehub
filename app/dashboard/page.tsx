@@ -128,7 +128,7 @@ export default async function DashboardPage() {
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b47a12]">
                 Operations Overview
               </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl text-slate-950">
                 Admin Dashboard
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
@@ -165,7 +165,7 @@ export default async function DashboardPage() {
                   <p className="text-sm font-semibold text-slate-500">
                     {card.label}
                   </p>
-                  <p className="mt-3 text-3xl font-semibold text-slate-950">
+                  <p className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
                     {card.value}
                   </p>
                 </div>

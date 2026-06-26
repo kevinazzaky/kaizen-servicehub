@@ -100,7 +100,7 @@ export default async function TechnicianJobDetailPage({
               <p className="text-sm font-medium text-zinc-500">
                 {workOrder.workOrderNo}
               </p>
-              <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+              <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
                 {workOrder.title}
               </h1>
             </div>

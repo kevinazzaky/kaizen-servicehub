@@ -48,8 +48,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const needsFirstAdmin = usersCount === 0;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_22%_18%,rgba(245,180,59,0.18),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(29,54,102,0.5),transparent_32%),linear-gradient(135deg,#0b0f17_0%,#111827_48%,#17223a_100%)] px-6 py-10 text-white">
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-5xl gap-8 lg:grid-cols-[0.9fr_1fr] lg:items-center">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_22%_18%,rgba(245,180,59,0.18),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(29,54,102,0.5),transparent_32%),linear-gradient(135deg,#0b0f17_0%,#111827_48%,#17223a_100%)] px-4 py-6 text-white sm:px-6 sm:py-10">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-5xl gap-7 sm:min-h-[calc(100vh-5rem)] lg:grid-cols-[0.9fr_1fr] lg:items-center">
         <section>
           <Link
             href="/"
@@ -57,10 +57,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           >
             Back to home
           </Link>
-          <p className="mt-8 text-sm font-bold uppercase tracking-[0.22em] text-[#f5b43b]">
+          <p className="mt-8 text-xs font-bold uppercase tracking-[0.16em] text-[#f5b43b] sm:text-sm sm:tracking-[0.22em]">
             Kaizen ServiceHub
           </p>
-          <h1 className="mt-4 max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-4 max-w-xl text-2xl font-semibold tracking-tight text-white sm:text-4xl">
             Masuk ke portal operasional sesuai peran.
           </h1>
           <p className="mt-4 max-w-lg text-sm leading-7 text-slate-300">
@@ -92,14 +92,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           ) : null}
         </section>
 
-        <section className="rounded-3xl border border-white/20 bg-white p-5 text-slate-950 shadow-2xl shadow-black/30 sm:p-6">
+        <section className="rounded-2xl border border-white/20 bg-white p-4 text-slate-950 shadow-2xl shadow-black/30 sm:rounded-3xl sm:p-6">
           {needsFirstAdmin ? (
             <>
               <div className="mb-6">
                 <p className="text-sm font-medium text-slate-500">
                   Initial Setup
                 </p>
-                <h2 className="mt-1 text-2xl font-semibold">
+                <h2 className="mt-1 text-xl font-semibold sm:text-2xl">
                   Create First Admin
                 </h2>
                 <p className="mt-2 text-sm text-slate-600">
@@ -146,7 +146,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-blue-700">
                   System Access
                 </p>
-                <h2 className="mt-1 text-2xl font-semibold text-slate-950">
+                <h2 className="mt-1 text-xl font-semibold text-slate-950 sm:text-2xl">
                   {getRoleTitle(selectedRole)}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-slate-600">

@@ -7,14 +7,14 @@ export function WorkflowSection({ copy }: { copy: MarketingCopy }) {
   return (
     <section
       id="workflow"
-      className="bg-[radial-gradient(circle_at_82%_12%,rgba(245,180,59,0.12),transparent_28%),linear-gradient(135deg,#0b0f17_0%,#111827_58%,#202a3a_100%)] px-6 py-20 text-white"
+      className="bg-[radial-gradient(circle_at_82%_12%,rgba(245,180,59,0.12),transparent_28%),linear-gradient(135deg,#0b0f17_0%,#111827_58%,#202a3a_100%)] px-4 py-14 text-white sm:px-6 sm:py-20"
     >
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f5b43b]">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#f5b43b] sm:text-sm sm:tracking-[0.2em]">
             {section.eyebrow}
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight">
+          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             {section.title}
           </h2>
         </div>
@@ -23,7 +23,7 @@ export function WorkflowSection({ copy }: { copy: MarketingCopy }) {
           {section.items.map((item, index) => (
             <div
               key={item.title}
-              className="rounded-3xl border border-white/15 bg-white/10 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
+              className="rounded-2xl border border-white/15 bg-white/10 p-5 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md sm:rounded-3xl"
             >
               <span className="grid size-10 place-items-center rounded-full bg-[#f5b43b] text-slate-950">
                 <MarketingIcon

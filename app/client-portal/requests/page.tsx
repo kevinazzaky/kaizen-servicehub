@@ -52,7 +52,7 @@ export default async function ClientRequestsPage() {
             <p className="text-sm font-medium text-zinc-500">
               Problem Reporting
             </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
               Requests
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-zinc-600">
